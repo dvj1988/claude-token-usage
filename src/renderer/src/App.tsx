@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { DataMeta, PriceTable, UsageQuery, UsageResult } from '../../shared/types'
+import type { AppSettings, DataMeta, PriceTable, UsageQuery, UsageResult } from '../../shared/types'
 import { SummaryCards } from './components/SummaryCards'
 import { Aggregates } from './components/Aggregates'
 import { SessionTable } from './components/SessionTable'
-import { PriceEditor } from './components/PriceEditor'
+import { SettingsPanel } from './components/SettingsPanel'
+import { Onboarding } from './components/Onboarding'
 import { Toolbar } from './components/Toolbar'
 import { SessionDetail } from './components/SessionDetail'
 
-type Tab = 'dashboard' | 'prices'
+type Tab = 'dashboard' | 'settings'
 
 export default function App() {
   const [meta, setMeta] = useState<DataMeta | null>(null)
   const [usage, setUsage] = useState<UsageResult | null>(null)
   const [prices, setPrices] = useState<PriceTable>({})
+  const [settings, setSettings] = useState<AppSettings | null>(null)
   const [tab, setTab] = useState<Tab>('dashboard')
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -46,10 +48,15 @@ export default function App() {
     ;(async () => {
       try {
         setLoading(true)
-        const [m, p] = await Promise.all([window.api.getMeta(), window.api.getPrices()])
+        const [m, p, s] = await Promise.all([
+          window.api.getMeta(),
+          window.api.getPrices(),
+          window.api.getSettings()
+        ])
         if (cancelled) return
         setMeta(m)
         setPrices(p)
+        setSettings(s)
         setStartDate(m.minDay ?? '')
         setEndDate(m.maxDay ?? '')
         await loadUsage({ startDate: m.minDay ?? null, endDate: m.maxDay ?? null, foldSubagents: true })
@@ -94,6 +101,40 @@ export default function App() {
     [query, loadUsage]
   )
 
+  const handleSaveSettings = useCallback(
+    async (next: AppSettings): Promise<{ warning: string | null }> => {
+      const { settings: saved, warning } = await window.api.saveSettings(next)
+      setSettings(saved)
+      const m = await window.api.refresh()
+      const p = await window.api.getPrices()
+      setMeta(m)
+      setPrices(p)
+      await loadUsage(query)
+      return { warning }
+    },
+    [query, loadUsage]
+  )
+
+  const handleCompleteOnboarding = useCallback(async (): Promise<void> => {
+    if (!settings) return
+    const { settings: saved } = await window.api.saveSettings({ ...settings, onboarded: true })
+    setSettings(saved)
+  }, [settings])
+
+  if (!loading && settings && !settings.onboarded) {
+    return (
+      <Onboarding
+        settings={settings}
+        effectiveClaudeDir={meta?.claudeDir ?? ''}
+        prices={prices}
+        models={meta?.models ?? []}
+        onSaveSettings={handleSaveSettings}
+        onSavePrices={handleSavePrices}
+        onComplete={handleCompleteOnboarding}
+      />
+    )
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -112,8 +153,8 @@ export default function App() {
           <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}>
             Dashboard
           </button>
-          <button className={tab === 'prices' ? 'active' : ''} onClick={() => setTab('prices')}>
-            Pricing
+          <button className={tab === 'settings' ? 'active' : ''} onClick={() => setTab('settings')}>
+            Settings
           </button>
           <button className="refresh" onClick={handleRefresh} disabled={refreshing}>
             {refreshing ? 'Refreshing.' : 'Refresh'}
@@ -149,15 +190,18 @@ export default function App() {
             </>
           )}
         </main>
-      ) : (
+      ) : settings ? (
         <main className="content">
-          <PriceEditor
+          <SettingsPanel
+            settings={settings}
+            effectiveClaudeDir={meta?.claudeDir ?? ''}
             prices={prices}
             models={meta?.models ?? []}
-            onSave={handleSavePrices}
+            onSaveSettings={handleSaveSettings}
+            onSavePrices={handleSavePrices}
           />
         </main>
-      )}
+      ) : null}
 
       {selectedSession && (
         <SessionDetail sessionId={selectedSession} onClose={() => setSelectedSession(null)} />

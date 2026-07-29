@@ -801,3 +801,36 @@ button.primary:hover {
 .folder-field button:hover {
   color: var(--accent);
 }
+
+/* Onboarding */
+.onboarding {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+.onboarding-card {
+  width: min(760px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.onboarding-card h1 {
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+
+.onboarding-intro {
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.onboarding-actions {
+  display: flex;
+  justify-content: flex-end;
+}
