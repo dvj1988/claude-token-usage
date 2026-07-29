@@ -94,13 +94,9 @@ export default function App() {
 
   const handleSavePrices = useCallback(
     async (next: PriceTable) => {
-      try {
-        const saved = await window.api.savePrices(next)
-        setPrices(saved)
-        await loadUsage(query)
-      } catch (e) {
-        setError(String(e))
-      }
+      const saved = await window.api.savePrices(next)
+      setPrices(saved)
+      await loadUsage(query)
     },
     [query, loadUsage]
   )
