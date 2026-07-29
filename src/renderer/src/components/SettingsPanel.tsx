@@ -12,6 +12,7 @@ interface Props {
 
 export interface SettingsPanelHandle {
   savePricesDraft: () => Promise<void>
+  saveFolderDraft: () => Promise<void>
 }
 
 const FIELDS: Array<{ key: keyof ModelRate; label: string }> = [
@@ -66,7 +67,8 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
   }
 
   useImperativeHandle(ref, () => ({
-    savePricesDraft: handleSavePrices
+    savePricesDraft: handleSavePrices,
+    saveFolderDraft: handleSaveFolder
   }))
 
   const handleBrowse = async (): Promise<void> => {

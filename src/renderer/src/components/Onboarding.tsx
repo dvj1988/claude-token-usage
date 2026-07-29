@@ -28,6 +28,7 @@ export function Onboarding({
     setStarting(true)
     try {
       await panelRef.current?.savePricesDraft()
+      await panelRef.current?.saveFolderDraft()
       await onComplete()
     } finally {
       setStarting(false)
