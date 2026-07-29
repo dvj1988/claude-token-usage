@@ -764,3 +764,40 @@ button.primary:hover {
     grid-column: span 1;
   }
 }
+
+/* Settings panel */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.folder-field {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.folder-field input[type='text'] {
+  flex: 1;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+.folder-field button {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.folder-field button:hover {
+  color: var(--accent);
+}
