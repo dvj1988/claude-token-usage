@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
-import type { DataMeta, PriceTable, UsageQuery } from '../shared/types'
+import type { AppSettings, DataMeta, PriceTable, SaveSettingsResult, UsageQuery } from '../shared/types'
 import { parseAll, type ParseResult } from './parser'
 import { ensurePricesForModels, loadPrices, savePrices } from './prices'
+import { loadSettings, saveSettings } from './settings'
 import { computeUsage } from './usage'
 import { getSessionDetail } from './detail'
 
@@ -55,6 +56,25 @@ function registerIpc(): void {
   ipcMain.handle('session:getDetail', async (_e, sessionId: string) => {
     const prices = await loadPrices()
     return getSessionDetail(sessionId, prices)
+  })
+
+  ipcMain.handle('settings:get', async (): Promise<AppSettings> => {
+    return loadSettings()
+  })
+
+  ipcMain.handle('settings:save', async (_e, settings: AppSettings): Promise<SaveSettingsResult> => {
+    return saveSettings(settings)
+  })
+
+  ipcMain.handle('dialog:pickFolder', async (): Promise<string | null> => {
+    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
+    if (result.canceled || result.filePaths.length === 0) return null
+    return result.filePaths[0]
+  })
+
+  ipcMain.handle('app:relaunch', async (): Promise<void> => {
+    app.relaunch()
+    app.exit(0)
   })
 }
 

@@ -173,4 +173,8 @@ export interface Api {
   getPrices: () => Promise<PriceTable>
   savePrices: (prices: PriceTable) => Promise<PriceTable>
   getSessionDetail: (sessionId: string) => Promise<SessionDetail | null>
+  getSettings: () => Promise<AppSettings>
+  saveSettings: (settings: AppSettings) => Promise<SaveSettingsResult>
+  pickFolder: () => Promise<string | null>
+  relaunchApp: () => Promise<void>
 }
