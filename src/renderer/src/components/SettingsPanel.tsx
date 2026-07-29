@@ -126,43 +126,45 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
             {saved ? 'Saved' : 'Save prices'}
           </button>
         </div>
-        <table className="data-table price-table">
-          <thead>
-            <tr>
-              <th>Model</th>
-              {FIELDS.map((f) => (
-                <th key={f.key} className="num">
-                  {f.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {allModels.map((model) => (
-              <tr key={model}>
-                <td>{model}</td>
+        <div className="panel-table-scroll">
+          <table className="data-table price-table">
+            <thead>
+              <tr>
+                <th>Model</th>
                 {FIELDS.map((f) => (
-                  <td key={f.key} className="num">
-                    <input
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      value={draft[model]?.[f.key] ?? 0}
-                      onChange={(e) => update(model, f.key, e.target.value)}
-                    />
-                  </td>
+                  <th key={f.key} className="num">
+                    {f.label}
+                  </th>
                 ))}
               </tr>
-            ))}
-            {allModels.length === 0 && (
-              <tr>
-                <td colSpan={6} className="empty">
-                  No models discovered yet
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {allModels.map((model) => (
+                <tr key={model}>
+                  <td>{model}</td>
+                  {FIELDS.map((f) => (
+                    <td key={f.key} className="num">
+                      <input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        value={draft[model]?.[f.key] ?? 0}
+                        onChange={(e) => update(model, f.key, e.target.value)}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {allModels.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="empty">
+                    No models discovered yet
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   )
