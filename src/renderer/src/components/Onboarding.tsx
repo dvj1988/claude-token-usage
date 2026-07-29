@@ -22,14 +22,18 @@ export function Onboarding({
   onComplete
 }: Props) {
   const [starting, setStarting] = useState(false)
+  const [startError, setStartError] = useState<string | null>(null)
   const panelRef = useRef<SettingsPanelHandle>(null)
 
   const handleGetStarted = async (): Promise<void> => {
     setStarting(true)
+    setStartError(null)
     try {
       await panelRef.current?.savePricesDraft()
       await panelRef.current?.saveFolderDraft()
       await onComplete()
+    } catch (e) {
+      setStartError(String(e))
     } finally {
       setStarting(false)
     }
@@ -55,6 +59,7 @@ export function Onboarding({
           onSavePrices={onSavePrices}
         />
         <div className="onboarding-actions">
+          {startError && <div className="banner error">{startError}</div>}
           <button className="primary" onClick={handleGetStarted} disabled={starting}>
             {starting ? 'Starting.' : 'Get Started'}
           </button>

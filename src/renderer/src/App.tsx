@@ -94,9 +94,13 @@ export default function App() {
 
   const handleSavePrices = useCallback(
     async (next: PriceTable) => {
-      const saved = await window.api.savePrices(next)
-      setPrices(saved)
-      await loadUsage(query)
+      try {
+        const saved = await window.api.savePrices(next)
+        setPrices(saved)
+        await loadUsage(query)
+      } catch (e) {
+        setError(String(e))
+      }
     },
     [query, loadUsage]
   )
@@ -116,10 +120,10 @@ export default function App() {
   )
 
   const handleCompleteOnboarding = useCallback(async (): Promise<void> => {
-    if (!settings) return
-    const { settings: saved } = await window.api.saveSettings({ ...settings, onboarded: true })
+    const current = await window.api.getSettings()
+    const { settings: saved } = await window.api.saveSettings({ ...current, onboarded: true })
     setSettings(saved)
-  }, [settings])
+  }, [])
 
   if (!loading && settings && !settings.onboarded) {
     return (

@@ -307,7 +307,9 @@ input[type='number'],
 }
 
 .panel-table-scroll {
+  max-height: 420px;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .muted {

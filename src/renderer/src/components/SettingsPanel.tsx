@@ -62,8 +62,12 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
   }
 
   const handleSavePrices = async (): Promise<void> => {
-    await onSavePrices(draft)
-    setSaved(true)
+    try {
+      await onSavePrices(draft)
+      setSaved(true)
+    } catch {
+      // App-level error banner already surfaces this; nothing else to do here.
+    }
   }
 
   useImperativeHandle(ref, () => ({
@@ -82,6 +86,8 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
     try {
       const result = await onSaveSettings({ ...settings, claudeDataDir: folderDraft.trim() || null })
       setFolderWarning(result.warning)
+    } catch (e) {
+      setFolderWarning(String(e))
     } finally {
       setFolderSaving(false)
     }
