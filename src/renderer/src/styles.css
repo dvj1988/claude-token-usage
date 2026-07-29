@@ -834,3 +834,39 @@ button.primary:hover {
   display: flex;
   justify-content: flex-end;
 }
+
+/* Crash recovery */
+.crash-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 24px;
+}
+
+.crash-screen h1 {
+  font-size: 18px;
+  color: var(--danger);
+  margin: 0;
+}
+
+.crash-screen pre {
+  max-width: 640px;
+  max-height: 220px;
+  overflow: auto;
+  background: #0b0e16;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
