@@ -38,6 +38,7 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
 
   const [draft, setDraft] = useState<PriceTable>({})
   const [saved, setSaved] = useState(false)
+  const [priceError, setPriceError] = useState<string | null>(null)
   const [folderDraft, setFolderDraft] = useState(settings.claudeDataDir ?? '')
   const [folderWarning, setFolderWarning] = useState<string | null>(null)
   const [folderSaving, setFolderSaving] = useState(false)
@@ -62,11 +63,12 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
   }
 
   const handleSavePrices = async (): Promise<void> => {
+    setPriceError(null)
     try {
       await onSavePrices(draft)
       setSaved(true)
-    } catch {
-      // App-level error banner already surfaces this; nothing else to do here.
+    } catch (e) {
+      setPriceError(String(e))
     }
   }
 
@@ -132,6 +134,7 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
             {saved ? 'Saved' : 'Save prices'}
           </button>
         </div>
+        {priceError && <div className="banner error">{priceError}</div>}
         <div className="panel-table-scroll">
           <table className="data-table price-table">
             <thead>
