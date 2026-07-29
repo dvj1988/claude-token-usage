@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export function CrashScreen({ error }: { error: Error | string }): JSX.Element {
+export function CrashScreen({ error }: { error: Error | string }) {
   const message = typeof error === 'string' ? error : error.message
   const stack = typeof error === 'string' ? null : error.stack
 

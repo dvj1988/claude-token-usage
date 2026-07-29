@@ -4,7 +4,7 @@ import App from './App'
 import { ErrorBoundary, CrashScreen } from './ErrorBoundary'
 import './styles.css'
 
-function Root(): JSX.Element {
+function Root() {
   const [crash, setCrash] = useState<Error | string | null>(null)
 
   useEffect(() => {
