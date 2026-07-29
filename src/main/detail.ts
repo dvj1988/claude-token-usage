@@ -332,7 +332,7 @@ function buildByModel(byModel: Map<string, { messages: number; tokens: TokenTota
 }
 
 async function locate(sessionId: string): Promise<{ mainFile: string | null; subagentFiles: string[] }> {
-  const root = getClaudeProjectsDir()
+  const root = await getClaudeProjectsDir()
   const files = await walkJsonl(root)
   let mainFile: string | null = null
   const subagentFiles: string[] = []

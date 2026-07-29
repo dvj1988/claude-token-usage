@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import { homedir } from 'os'
 import { join, basename, dirname, sep } from 'path'
 import type { Entrypoint } from '../shared/types'
+import { loadSettings } from './settings'
 
 export interface UsageRecord {
   messageId: string | null
@@ -32,7 +33,9 @@ export interface ParseResult {
   claudeDir: string
 }
 
-export function getClaudeProjectsDir(): string {
+export async function getClaudeProjectsDir(): Promise<string> {
+  const settings = await loadSettings()
+  if (settings.claudeDataDir) return settings.claudeDataDir
   return join(homedir(), '.claude', 'projects')
 }
 
@@ -93,7 +96,7 @@ function fileContext(filePath: string, root: string): FileContext {
 }
 
 export async function parseAll(): Promise<ParseResult> {
-  const root = getClaudeProjectsDir()
+  const root = await getClaudeProjectsDir()
   const files = await walkJsonl(root)
   const records: UsageRecord[] = []
   const models = new Set<string>()
