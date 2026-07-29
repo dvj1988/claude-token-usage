@@ -10,6 +10,16 @@ export interface ModelRate {
 
 export type PriceTable = Record<string, ModelRate>
 
+export interface AppSettings {
+  onboarded: boolean
+  claudeDataDir: string | null
+}
+
+export interface SaveSettingsResult {
+  settings: AppSettings
+  warning: string | null
+}
+
 export interface TokenTotals {
   input: number
   output: number
