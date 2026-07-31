@@ -306,6 +306,12 @@ input[type='number'],
   white-space: nowrap;
 }
 
+.button-row {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .panel-table-scroll {
   max-height: 420px;
   overflow-x: auto;

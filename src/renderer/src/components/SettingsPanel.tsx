@@ -72,6 +72,17 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
     }
   }
 
+  const handleResetDefaults = async (): Promise<void> => {
+    setSaved(false)
+    setPriceError(null)
+    try {
+      const defaults = await window.api.getDefaultPrices(allModels)
+      setDraft(defaults)
+    } catch (e) {
+      setPriceError(String(e))
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     savePricesDraft: handleSavePrices,
     saveFolderDraft: handleSaveFolder
@@ -130,9 +141,12 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, Props>(function Set
               Cache pricing matters: 1-hour cache writes are more expensive than 5-minute writes.
             </p>
           </div>
-          <button className="primary" onClick={handleSavePrices}>
-            {saved ? 'Saved' : 'Save prices'}
-          </button>
+          <div className="button-row">
+            <button onClick={handleResetDefaults}>Reset to defaults</button>
+            <button className="primary" onClick={handleSavePrices}>
+              {saved ? 'Saved' : 'Save prices'}
+            </button>
+          </div>
         </div>
         {priceError && <div className="banner error">{priceError}</div>}
         <div className="panel-table-scroll">

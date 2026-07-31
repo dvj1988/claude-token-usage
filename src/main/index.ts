@@ -3,6 +3,7 @@ import { join } from 'path'
 import type { AppSettings, DataMeta, PriceTable, SaveSettingsResult, UsageQuery } from '../shared/types'
 import { parseAll, type ParseResult } from './parser'
 import { ensurePricesForModels, loadPrices, savePrices } from './prices'
+import { defaultRateForModel } from './defaults'
 import { loadSettings, saveSettings } from './settings'
 import { computeUsage } from './usage'
 import { getSessionDetail } from './detail'
@@ -51,6 +52,12 @@ function registerIpc(): void {
 
   ipcMain.handle('prices:save', async (_e, prices: PriceTable): Promise<PriceTable> => {
     return savePrices(prices)
+  })
+
+  ipcMain.handle('prices:getDefaults', async (_e, models: string[]): Promise<PriceTable> => {
+    const table: PriceTable = {}
+    for (const model of models) table[model] = defaultRateForModel(model)
+    return table
   })
 
   ipcMain.handle('session:getDetail', async (_e, sessionId: string) => {

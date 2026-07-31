@@ -7,6 +7,7 @@ const api: Api = {
   getUsage: (query: UsageQuery) => ipcRenderer.invoke('usage:get', query),
   getPrices: () => ipcRenderer.invoke('prices:get'),
   savePrices: (prices: PriceTable) => ipcRenderer.invoke('prices:save', prices),
+  getDefaultPrices: (models: string[]) => ipcRenderer.invoke('prices:getDefaults', models),
   getSessionDetail: (sessionId: string) => ipcRenderer.invoke('session:getDetail', sessionId),
   getSettings: () => ipcRenderer.invoke('settings:get'),
   saveSettings: (settings: AppSettings) => ipcRenderer.invoke('settings:save', settings),

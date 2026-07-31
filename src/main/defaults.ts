@@ -9,7 +9,7 @@ const FAMILY_RATES: Array<{ test: RegExp; rate: ModelRate }> = [
       inputPerM: 5,
       outputPerM: 25,
       cacheWritePerM: 6.25,
-      cacheWrite1hPerM: 10,
+      cacheWrite1hPerM: 6.25,
       cacheReadPerM: 0.5
     }
   },
@@ -19,7 +19,7 @@ const FAMILY_RATES: Array<{ test: RegExp; rate: ModelRate }> = [
       inputPerM: 3,
       outputPerM: 15,
       cacheWritePerM: 3.75,
-      cacheWrite1hPerM: 6,
+      cacheWrite1hPerM: 3.75,
       cacheReadPerM: 0.3
     }
   },
@@ -29,7 +29,7 @@ const FAMILY_RATES: Array<{ test: RegExp; rate: ModelRate }> = [
       inputPerM: 1,
       outputPerM: 5,
       cacheWritePerM: 1.25,
-      cacheWrite1hPerM: 2,
+      cacheWrite1hPerM: 1.25,
       cacheReadPerM: 0.1
     }
   }
@@ -43,7 +43,21 @@ const ZERO_RATE: ModelRate = {
   cacheReadPerM: 0
 }
 
+// Sonnet 5 launched at introductory pricing, through Aug 31, 2026; after that
+// it reverts to standard Sonnet-family pricing (the /sonnet/i rate above).
+const SONNET_5_INTRO_CUTOFF = Date.UTC(2026, 8, 1) // 2026-09-01T00:00:00Z
+const SONNET_5_INTRO_RATE: ModelRate = {
+  inputPerM: 2,
+  outputPerM: 10,
+  cacheWritePerM: 2.5,
+  cacheWrite1hPerM: 2.5,
+  cacheReadPerM: 0.2
+}
+
 export function defaultRateForModel(model: string): ModelRate {
+  if (/sonnet-5(?:-|$)/i.test(model) && Date.now() < SONNET_5_INTRO_CUTOFF) {
+    return { ...SONNET_5_INTRO_RATE }
+  }
   for (const { test, rate } of FAMILY_RATES) {
     if (test.test(model)) return { ...rate }
   }

@@ -172,6 +172,7 @@ export interface Api {
   getUsage: (query: UsageQuery) => Promise<UsageResult>
   getPrices: () => Promise<PriceTable>
   savePrices: (prices: PriceTable) => Promise<PriceTable>
+  getDefaultPrices: (models: string[]) => Promise<PriceTable>
   getSessionDetail: (sessionId: string) => Promise<SessionDetail | null>
   getSettings: () => Promise<AppSettings>
   saveSettings: (settings: AppSettings) => Promise<SaveSettingsResult>
