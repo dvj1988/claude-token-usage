@@ -18,3 +18,15 @@ mac:
   artifactName: ${productName}-${version}-${arch}.${ext}
 dmg:
   artifactName: ${productName}-${version}-${arch}.${ext}
+win:
+  target:
+    - nsis
+  artifactName: ${productName}-${version}-${arch}.${ext}
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+linux:
+  category: Development
+  target:
+    - AppImage
+  artifactName: ${productName}-${version}-${arch}.${ext}

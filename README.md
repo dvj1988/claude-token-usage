@@ -1,6 +1,6 @@
 # Claude Token Usage
 
-A local macOS desktop app (Electron + React + TypeScript) that reads your Claude Code
+A local desktop app (Electron + React + TypeScript) that reads your Claude Code
 session transcripts and reports token usage and cost per model per session, with date
 filtering, aggregates, and editable pricing.
 
@@ -28,6 +28,43 @@ prices on first run; everything is editable and your edits are saved to
 > Cache tokens usually dominate real usage, so cache read/write rates matter a lot for an
 > accurate cost figure.
 
+## Install
+
+There are no prebuilt releases yet, so install by building from source (see
+[Build from source](#build-from-source) below), then follow the steps for your OS.
+
+> **Platform status:** macOS is the primary target and has been built and manually
+> verified. Windows and Linux packaging is configured (via electron-builder) but has
+> not been built or tested on those platforms yet — if you try it, please report any
+> issues.
+
+### macOS
+
+1. Build with `npm run build:mac` (see below).
+2. In `dist/`, open the `.dmg` and drag **Claude Token Usage.app** into `Applications`,
+   or unzip the `.zip` and move the `.app` there yourself.
+3. Since the app isn't signed/notarized with an Apple Developer certificate, the first
+   launch will be blocked by Gatekeeper. Right-click the app → **Open** → **Open** in
+   the dialog (only needed once), or allow it via **System Settings → Privacy &
+   Security**.
+
+### Windows
+
+1. Build with `npm run build:win` (see below).
+2. In `dist/`, run the generated `.exe` installer and follow the prompts.
+3. The installer isn't code-signed, so SmartScreen will likely warn about an unknown
+   publisher. Click **More info → Run anyway** to proceed.
+
+### Linux
+
+1. Build with `npm run build:linux` (see below).
+2. In `dist/`, mark the generated `.AppImage` executable and run it directly:
+   ```bash
+   chmod +x "Claude Token Usage-<version>-<arch>.AppImage"
+   ./"Claude Token Usage-<version>-<arch>.AppImage"
+   ```
+   No installation step is required; the AppImage runs in place.
+
 ## Requirements
 
 - Node.js 18+ (developed against Node 22)
@@ -39,13 +76,18 @@ npm install
 npm run dev
 ```
 
-## Build a macOS app
+## Build from source
 
 ```bash
-npm run build:mac
+npm install
+npm run build:mac    # macOS: .dmg and .zip
+npm run build:win    # Windows: NSIS installer .exe
+npm run build:linux  # Linux: .AppImage
 ```
 
-The packaged `.app` / `.dmg` is written to `dist/`.
+Each command writes its packaged artifact(s) to `dist/`. You must run the build on
+(or cross-compile from) the target OS you're packaging for — electron-builder does
+not reliably cross-build native platform installers from a different host OS.
 
 ## Data source
 
