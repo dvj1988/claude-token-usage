@@ -1,5 +1,6 @@
 appId: com.local.claude-token-usage
 productName: Claude Token Usage
+icon: build/icon.png
 directories:
   buildResources: build
   output: dist
